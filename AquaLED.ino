@@ -52,11 +52,9 @@ void sundown(unsigned int sec_speed) {
   int w = 150;
   setColor(strip.Color(r,g,b,w)); 
   for(int i=120; i>0; i--) {
-    g = g-i;
-    g = max(g,0);
-    b = b-i;
-    b = max(b,0);
-    w = w-i;
+    if (g>0) g = g-1;
+    if (b>0) b = b-1;
+    if (w>0) w = w-1;
     setColor(strip.Color(r,g,b,w)); 
     strip.show();
     delay(sec_speed*SECOND);
@@ -64,17 +62,16 @@ void sundown(unsigned int sec_speed) {
   g=0;
   b=0;
   for(int i=130; i>0; i--) {
-    r = r-i;
-    max(r,0);
-    if (i % 2 != 0) {
-      w = w-i;
-      max(w,0);
+    if (r>0) r = r-1;
+    if (i % 3 == 0) {
+      if (w>0) w = w-1;
     }
     setColor(strip.Color(r,g,b,w)); 
     strip.show();
     delay(sec_speed*SECOND);
   }
   setColor(strip.Color(0,0,0,0)); 
+  strip.show();
 }
 
 void colorTest() {
@@ -100,8 +97,8 @@ void setup() {
   randomSeed(analogRead(0));
 }
 
-void loop() {
-  Serial.println("Loop start");
+void timedRoutine () {
+  Serial.println("Start of timed routine");
   ctime = millis();
   // 17:00
   Serial.println("17:00");
@@ -147,5 +144,10 @@ void loop() {
   setColor(strip.Color(0, 0, 0, 0)); // Off
   while(millis() < ctime+(3*HOUR+30*MINUTE)) pass;
   ctime = millis();
+}
+
+void loop() {
+  Serial.println("Loop start");
+  timedRoutine();
 }
 
