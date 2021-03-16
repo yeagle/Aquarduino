@@ -25,9 +25,9 @@ void setColor(uint32_t color) {
 }
 
 void setColorLow(uint32_t color) {
-  int rnum = random(-5,5);
+  int rnum = random(-3,3);
   for(int i=10; i<strip.numPixels(); i++) {
-    if(i==(30+rnum) || i==(50+rnum) || i==(102-rnum) || i==(122-rnum)) { 
+    if(i==(30+rnum) || i==(45+rnum) || i==(92-rnum) || i==(107-rnum) || i==(122-rnum)) { 
       strip.setPixelColor(i, color);
     }
     else {
@@ -50,7 +50,7 @@ void sundown(unsigned int sec_speed) {
   int g = 70;
   int b = 0;
   int w = 150;
-  setColor(strip.Color(r,g,b,w)); 
+  //setColor(strip.Color(r,g,b,w)); 
   for(int i=120; i>0; i--) {
     if (g>0) g = g-1;
     if (b>0) b = b-1;
@@ -61,12 +61,31 @@ void sundown(unsigned int sec_speed) {
   }
   g=0;
   b=0;
-  for(int i=130; i>0; i--) {
+  for(int i=0; i<130; i++) {
     if (r>0) r = r-1;
     if (i % 3 == 0) {
       if (w>0) w = w-1;
     }
-    setColor(strip.Color(r,g,b,w)); 
+    if (i <= 60) {
+      for(int j=i/2; j<(strip.numPixels()/2-i/2); j++) {
+        strip.setPixelColor(j, strip.Color(r,g,b,w));
+      }
+      for(int j=strip.numPixels()/2+i/2; j<(strip.numPixels()-i/2); j++) {
+        strip.setPixelColor(j, strip.Color(r,g,b,w));
+      }
+      for(int j=0; j<i/2; j++) {
+        strip.setPixelColor(j, strip.Color(0,0,0,0));
+        strip.setPixelColor((strip.numPixels()/2-j), strip.Color(0,0,0,0));
+        strip.setPixelColor((strip.numPixels()/2+j), strip.Color(0,0,0,0));
+        strip.setPixelColor((strip.numPixels()-j), strip.Color(0,0,0,0));
+      }
+    }
+    else {
+      for(int j=60/2; j<=(strip.numPixels()/2-60/2); j++) {
+        strip.setPixelColor(j, strip.Color(r,g,b,w));
+        strip.setPixelColor((strip.numPixels()/2+j), strip.Color(r,g,b,w));
+      }
+    }
     strip.show();
     delay(sec_speed*SECOND);
   }
@@ -91,7 +110,7 @@ void setup() {
   strip.setBrightness(BRIGHTNESS);
 
   // Serial communication
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // for random function
   randomSeed(analogRead(0));
