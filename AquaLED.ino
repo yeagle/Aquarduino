@@ -5,7 +5,8 @@
 #endif
 
 #define LED_PIN     6 // Which pin on the Arduino is connected to the NeoPixels
-#define LED_COUNT  140 // How many NeoPixels are attached to the Arduino
+#define LED_COUNT  239 //Benny // How many NeoPixels are attached to the Arduino
+//#define LED_COUNT  140 // How many NeoPixels are attached to the Arduino
 #define BRIGHTNESS 255 // NeoPixel brightness, 0 (min) to 255 (max)
 
 #define pass (void)0
@@ -37,12 +38,32 @@ void setColorLow(uint32_t color) {
   strip.show();
 }
 
+void setColorLowBenny(uint32_t color) {
+  int rnum = random(-3,3);
+  for(int i=0; i<strip.numPixels(); i++) {
+    if(i % 5 == 0) { 
+      strip.setPixelColor(i, color);
+    }
+    else {
+      strip.setPixelColor(i, strip.Color(0,0,0,0));
+    }
+  }
+  strip.show();
+}
+
 void daylight() {
   setColor(strip.Color(130, 70, 0, 150)); 
 }
 
+void lightBenny() {
+  setColor(strip.Color(20,20,20,200)); 
+}
+
 void moonlight() {
   setColorLow(strip.Color(3, 1, 70, 0));
+}
+void moonlightBenny() {
+  setColorLowBenny(strip.Color(3, 1, 70, 0));
 }
 
 void sundown(unsigned int sec_speed) {
@@ -127,7 +148,7 @@ void timedRoutine () {
   ctime = millis();
   // 20:30
   Serial.println("20:30");
-  sundown(4);
+  sundown(5);
   moonlight();
   while(millis() < ctime+(30*MINUTE)) pass;
   ctime = millis();
@@ -165,8 +186,33 @@ void timedRoutine () {
   ctime = millis();
 }
 
+void timedRoutineBenny () {
+  Serial.println("Start of timed routine");
+  ctime = millis();
+  // 17:00
+  Serial.println("15:00");
+  colorTest();
+  lightBenny();
+  while(millis() < ctime+(10*HOUR)) pass;
+  ctime = millis();
+  // 01:00
+  Serial.println("01:00");
+  sundown(5);
+  moonlightBenny();
+  while(millis() < ctime+(1*HOUR)) pass;
+  ctime = millis();
+  // 02:00
+  Serial.println("02:00");
+  setColor(strip.Color(0, 0, 0, 0)); // Off
+  while(millis() < ctime+(13*HOUR)) pass;
+  ctime = millis();
+  // 15:00
+}
+
 void loop() {
   Serial.println("Loop start");
-  timedRoutine();
+  //timedRoutine();
+  timedRoutineBenny();
+  //sundown(0);
 }
 
