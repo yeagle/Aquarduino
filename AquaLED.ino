@@ -1,11 +1,11 @@
 #include <Adafruit_NeoPixel.h>
 
 #ifdef __AVR__
- #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+#include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
 #define LED_PIN     6 // Which pin on the Arduino is connected to the NeoPixels
-#define LED_COUNT  140 // How many NeoPixels are attached to the Arduino
+#define LED_COUNT  239 // How many NeoPixels are attached to the Arduino
 #define BRIGHTNESS 255 // NeoPixel brightness, 0 (min) to 255 (max)
 
 #define pass (void)0
@@ -39,6 +39,10 @@ void setColorLow(uint32_t color) {
 
 void daylight() {
   setColor(strip.Color(130, 70, 0, 150)); 
+}
+
+void lightBright() {
+  setColor(strip.Color(20,20,20,200)); 
 }
 
 void moonlight() {
@@ -170,8 +174,8 @@ void setup() {
 void timedRoutine () {
   Serial.println("Start of timed routine");
   ctime = millis();
-  // 17:00
-  Serial.println("17:00");
+  // 15:00
+  Serial.println("15:00");
   colorTest();
   daylight();
   while(millis() < ctime+(4*HOUR+0*MINUTE)) pass;
@@ -192,8 +196,8 @@ void timedRoutine () {
   moonlight();
   while(millis() < ctime+(2*HOUR)) pass;
   ctime = millis();
-  // 07:00
-  Serial.println("07:00");
+  // 03:00
+  Serial.println("03:00");
   setColor(strip.Color(0, 0, 0, 0)); // Off
   sunrise(30);
   plantlight();
@@ -204,7 +208,7 @@ void timedRoutine () {
   daylight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
-  // 17:00
+  // 15:00
 }
 
 void loop() {
