@@ -130,6 +130,20 @@ void sunrise(unsigned int sec_speed) {
   }
 }
 
+// plant light
+// every 5th led blue, others red (rrrrbrrrrbrrrrb...)
+void plantlight() {
+  for(int i=0; i<strip.numPixels(); i++) {
+    if(i % 5 == 0) {
+      strip.setPixelColor(i, strip.Color(0,0,255,0)); // blue
+    }
+    else {
+      strip.setPixelColor(i, strip.Color(255,0,0,0)); // red
+    }
+  }
+  strip.show();
+}
+
 void colorTest() {
   setColor(strip.Color(255, 0, 0, 0)); // Red
   delay(500);
@@ -160,11 +174,11 @@ void timedRoutine () {
   Serial.println("17:00");
   colorTest();
   daylight();
-  while(millis() < ctime+(3*HOUR+30*MINUTE)) pass;
+  while(millis() < ctime+(4*HOUR+0*MINUTE)) pass;
   ctime = millis();
   // 21:00
   Serial.println("21:00");
-  sundown(20);
+  sundown(30);
   moonlight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
@@ -180,17 +194,12 @@ void timedRoutine () {
   ctime = millis();
   // 07:00
   Serial.println("07:00");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
-  while(millis() < ctime+(2*HOUR)) pass;
-  ctime = millis();
-  // 09:00
-  Serial.println("09:00");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
-  while(millis() < ctime+(3*HOUR)) pass;
+  sunrise(40);
+  plantlight();
+  while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
   // 12:00
   Serial.println("12:00");
-  sunrise(20);
   daylight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
@@ -200,6 +209,7 @@ void timedRoutine () {
 void loop() {
   Serial.println("Loop start");
   timedRoutine();
+  //plantlight();
   //sunrise(0);
   //sundown(0);
 }
