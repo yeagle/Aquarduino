@@ -25,9 +25,9 @@ void setColor(uint32_t color) {
 }
 
 void setColorLow(uint32_t color) {
-  int rnum = random(-3,3);
+  int rnum = random(-10,10);
   for(int i=10; i<strip.numPixels(); i++) {
-    if(i==(30+rnum) || i==(45+rnum) || i==(92-rnum) || i==(107-rnum) || i==(122-rnum)) { 
+    if(i==(28+rnum) || i==(43+rnum) || i==(88-rnum) || i==(103-rnum) || i==(118-rnum)) { 
       strip.setPixelColor(i, color);
     }
     else {
@@ -194,7 +194,8 @@ void timedRoutine () {
   ctime = millis();
   // 07:00
   Serial.println("07:00");
-  sunrise(40);
+  setColor(strip.Color(0, 0, 0, 0)); // Off
+  sunrise(30);
   plantlight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
@@ -209,8 +210,10 @@ void timedRoutine () {
 void loop() {
   Serial.println("Loop start");
   timedRoutine();
+  //moonlight();
   //plantlight();
   //sunrise(0);
   //sundown(0);
+  //delay(1*SECOND);
 }
 
