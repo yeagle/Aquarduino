@@ -83,31 +83,21 @@ void sundown(unsigned int sec_speed) {
       if (w>0) w = w-1;
     }
     if (i <= 60) {
-      for(int j=i/2; j<(strip1.numPixels()/2-i/2); j++) {
-        strip1.setPixelColor(j, strip1.Color(r,g,b,w));
-        strip2.setPixelColor(j, strip2.Color(r,g,b,w));
-      }
-      for(int j=strip1.numPixels()/2+i/2; j<(strip1.numPixels()-i/2); j++) {
+      for(int j=i/2; j<(strip1.numPixels()-i/2); j++) {
         strip1.setPixelColor(j, strip1.Color(r,g,b,w));
         strip2.setPixelColor(j, strip2.Color(r,g,b,w));
       }
       for(int j=0; j<i/2; j++) {
         strip1.setPixelColor(j, strip1.Color(0,0,0,0));
         strip2.setPixelColor(j, strip2.Color(0,0,0,0));
-        strip1.setPixelColor((strip1.numPixels()/2-j), strip1.Color(0,0,0,0));
-        strip2.setPixelColor((strip2.numPixels()/2-j), strip2.Color(0,0,0,0));
-        strip1.setPixelColor((strip1.numPixels()/2+j), strip1.Color(0,0,0,0));
-        strip2.setPixelColor((strip2.numPixels()/2+j), strip2.Color(0,0,0,0));
         strip1.setPixelColor((strip1.numPixels()-j), strip1.Color(0,0,0,0));
         strip2.setPixelColor((strip2.numPixels()-j), strip2.Color(0,0,0,0));
       }
     }
     else {
-      for(int j=60/2; j<=(strip1.numPixels()/2-60/2); j++) {
+      for(int j=60/2; j<=(strip1.numPixels()-60/2); j++) {
         strip1.setPixelColor(j, strip1.Color(r,g,b,w));
         strip2.setPixelColor(j, strip2.Color(r,g,b,w));
-        strip1.setPixelColor((strip1.numPixels()/2+j), strip1.Color(r,g,b,w));
-        strip2.setPixelColor((strip2.numPixels()/2+j), strip2.Color(r,g,b,w));
       }
     }
     strip1.show();
@@ -137,14 +127,10 @@ void sunrise(unsigned int sec_speed) {
       if (w<=w_target) w = w+1;
     }
     for(int j=0; j<i; j++) {
-      strip1.setPixelColor(strip1.numPixels()/2+strip1.numPixels()/4+j, strip1.Color(r,g,b,w));
-      strip2.setPixelColor(strip2.numPixels()/2+strip2.numPixels()/4+j, strip2.Color(r,g,b,w));
-      strip1.setPixelColor(strip1.numPixels()/2+strip1.numPixels()/4-j, strip1.Color(r,g,b,w));
-      strip2.setPixelColor(strip2.numPixels()/2+strip2.numPixels()/4-j, strip2.Color(r,g,b,w));
-      strip1.setPixelColor(strip1.numPixels()/2-strip1.numPixels()/4+j, strip1.Color(r,g,b,w));
-      strip2.setPixelColor(strip2.numPixels()/2-strip2.numPixels()/4+j, strip2.Color(r,g,b,w));
-      strip1.setPixelColor(strip1.numPixels()/2-strip1.numPixels()/4-j, strip1.Color(r,g,b,w));
-      strip2.setPixelColor(strip2.numPixels()/2-strip2.numPixels()/4-j, strip2.Color(r,g,b,w));
+      strip1.setPixelColor(strip1.numPixels()/2+j, strip1.Color(r,g,b,w));
+      strip2.setPixelColor(strip2.numPixels()/2+j, strip2.Color(r,g,b,w));
+      strip1.setPixelColor(strip1.numPixels()/2-j, strip1.Color(r,g,b,w));
+      strip2.setPixelColor(strip2.numPixels()/2-j, strip2.Color(r,g,b,w));
     }
     strip1.show();
     strip2.show();
@@ -220,16 +206,28 @@ void timedRoutine () {
   daylight();
   while(millis() < ctime+(7*HOUR+0*MINUTE)) pass;
   ctime = millis();
-  // 21:00
-  Serial.println("00:00");
+  // 22:00
+  Serial.println("22:00");
   sundown(30);
   moonlight();
-  while(millis() < ctime+(5*HOUR)) pass;
+  while(millis() < ctime+(4*HOUR)) pass;
   ctime = millis();
   // 02:00
-  Serial.println("05:00");
+  Serial.println("02:00");
+  setColor(strip1.Color(0, 0, 0, 0)); // Off
+  setColor(strip2.Color(0, 0, 0, 0)); // Off
+  while(millis() < ctime+(4*HOUR)) pass;
+  ctime = millis();
+  // 06:00
+  Serial.println("06:00");
   moonlight();
-  while(millis() < ctime+(5*HOUR)) pass;
+  while(millis() < ctime+(2*HOUR)) pass;
+  ctime = millis();
+  // 08:00
+  Serial.println("08:00");
+  setColor(strip1.Color(0, 0, 0, 0)); // Off
+  setColor(strip2.Color(0, 0, 0, 0)); // Off
+  while(millis() < ctime+(2*HOUR)) pass;
   ctime = millis();
   // 03:00
   Serial.println("10:00");
