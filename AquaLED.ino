@@ -4,13 +4,15 @@
 #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
-#define LED_PIN     6 // Which pin on the Arduino is connected to the NeoPixels
-#define LED_COUNT  239 // How many NeoPixels are attached to the Arduino
+#define LED_PIN1    6 // Which pin on the Arduino is connected to the NeoPixels
+#define LED_PIN2    9 // Which pin on the Arduino is connected to the NeoPixels
+#define LED_COUNT  120 // How many NeoPixels are attached to the Arduino
 #define BRIGHTNESS 255 // NeoPixel brightness, 0 (min) to 255 (max)
 
 #define pass (void)0
 
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800); // Declare NeoPixel strip object
+Adafruit_NeoPixel strip1(LED_COUNT, LED_PIN1, NEO_GRBW + NEO_KHZ800); // Declare NeoPixel strip object
+Adafruit_NeoPixel strip2(LED_COUNT, LED_PIN2, NEO_GRBW + NEO_KHZ800); // Declare NeoPixel strip object
 
 const unsigned long SECOND = 1000;
 const unsigned long MINUTE = SECOND * 60;
@@ -18,35 +20,43 @@ const unsigned long HOUR = SECOND * 3600;
 unsigned long ctime = 0;
 
 void setColor(uint32_t color) {
-  for(int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, color);
+  for(int i=0; i<strip1.numPixels(); i++) {
+    strip1.setPixelColor(i, color);
+    strip2.setPixelColor(i, color);
   }
-  strip.show();
+  strip1.show();
+  strip2.show();
 }
 
 void setColorLow(uint32_t color) {
   int rnum = random(-10,10);
-  for(int i=10; i<strip.numPixels(); i++) {
+  for(int i=10; i<strip1.numPixels(); i++) {
     if(i==(28+rnum) || i==(43+rnum) || i==(88-rnum) || i==(103-rnum) || i==(118-rnum)) { 
-      strip.setPixelColor(i, color);
+      strip1.setPixelColor(i, color);
+      strip2.setPixelColor(i, color);
     }
     else {
-      strip.setPixelColor(i, strip.Color(0,0,0,0));
+      strip1.setPixelColor(i, strip2.Color(0,0,0,0));
+      strip2.setPixelColor(i, strip2.Color(0,0,0,0));
     }
   }
-  strip.show();
+  strip1.show();
+  strip2.show();
 }
 
 void daylight() {
-  setColor(strip.Color(130, 70, 0, 150)); 
+  setColor(strip1.Color(130, 70, 0, 150)); 
+  setColor(strip2.Color(130, 70, 0, 150)); 
 }
 
 void lightBright() {
-  setColor(strip.Color(20,20,20,200)); 
+  setColor(strip1.Color(20,20,20,200)); 
+  setColor(strip2.Color(20,20,20,200)); 
 }
 
 void moonlight() {
-  setColorLow(strip.Color(3, 1, 70, 0));
+  setColorLow(strip1.Color(3, 1, 70, 0));
+  setColorLow(strip2.Color(3, 1, 70, 0));
 }
 
 void sundown(unsigned int sec_speed) {
@@ -54,13 +64,15 @@ void sundown(unsigned int sec_speed) {
   int g = 70;
   int b = 0;
   int w = 150;
-  //setColor(strip.Color(r,g,b,w)); 
+  //setColor(strip1.Color(r,g,b,w)); 
   for(int i=120; i>0; i--) {
     if (g>0) g = g-1;
     if (b>0) b = b-1;
     if (w>0) w = w-1;
-    setColor(strip.Color(r,g,b,w)); 
-    strip.show();
+    setColor(strip1.Color(r,g,b,w)); 
+    setColor(strip2.Color(r,g,b,w)); 
+    strip1.show();
+    strip2.show();
     delay(sec_speed*SECOND);
   }
   g=0;
@@ -71,30 +83,41 @@ void sundown(unsigned int sec_speed) {
       if (w>0) w = w-1;
     }
     if (i <= 60) {
-      for(int j=i/2; j<(strip.numPixels()/2-i/2); j++) {
-        strip.setPixelColor(j, strip.Color(r,g,b,w));
+      for(int j=i/2; j<(strip1.numPixels()/2-i/2); j++) {
+        strip1.setPixelColor(j, strip1.Color(r,g,b,w));
+        strip2.setPixelColor(j, strip2.Color(r,g,b,w));
       }
-      for(int j=strip.numPixels()/2+i/2; j<(strip.numPixels()-i/2); j++) {
-        strip.setPixelColor(j, strip.Color(r,g,b,w));
+      for(int j=strip1.numPixels()/2+i/2; j<(strip1.numPixels()-i/2); j++) {
+        strip1.setPixelColor(j, strip1.Color(r,g,b,w));
+        strip2.setPixelColor(j, strip2.Color(r,g,b,w));
       }
       for(int j=0; j<i/2; j++) {
-        strip.setPixelColor(j, strip.Color(0,0,0,0));
-        strip.setPixelColor((strip.numPixels()/2-j), strip.Color(0,0,0,0));
-        strip.setPixelColor((strip.numPixels()/2+j), strip.Color(0,0,0,0));
-        strip.setPixelColor((strip.numPixels()-j), strip.Color(0,0,0,0));
+        strip1.setPixelColor(j, strip1.Color(0,0,0,0));
+        strip2.setPixelColor(j, strip2.Color(0,0,0,0));
+        strip1.setPixelColor((strip1.numPixels()/2-j), strip1.Color(0,0,0,0));
+        strip2.setPixelColor((strip2.numPixels()/2-j), strip2.Color(0,0,0,0));
+        strip1.setPixelColor((strip1.numPixels()/2+j), strip1.Color(0,0,0,0));
+        strip2.setPixelColor((strip2.numPixels()/2+j), strip2.Color(0,0,0,0));
+        strip1.setPixelColor((strip1.numPixels()-j), strip1.Color(0,0,0,0));
+        strip2.setPixelColor((strip2.numPixels()-j), strip2.Color(0,0,0,0));
       }
     }
     else {
-      for(int j=60/2; j<=(strip.numPixels()/2-60/2); j++) {
-        strip.setPixelColor(j, strip.Color(r,g,b,w));
-        strip.setPixelColor((strip.numPixels()/2+j), strip.Color(r,g,b,w));
+      for(int j=60/2; j<=(strip1.numPixels()/2-60/2); j++) {
+        strip1.setPixelColor(j, strip1.Color(r,g,b,w));
+        strip2.setPixelColor(j, strip2.Color(r,g,b,w));
+        strip1.setPixelColor((strip1.numPixels()/2+j), strip1.Color(r,g,b,w));
+        strip2.setPixelColor((strip2.numPixels()/2+j), strip2.Color(r,g,b,w));
       }
     }
-    strip.show();
+    strip1.show();
+    strip2.show();
     delay(sec_speed*SECOND);
   }
-  setColor(strip.Color(0,0,0,0)); 
-  strip.show();
+  setColor(strip1.Color(0,0,0,0)); 
+  setColor(strip2.Color(0,0,0,0)); 
+  strip1.show();
+  strip2.show();
 }
 
 void sunrise(unsigned int sec_speed) {
@@ -114,12 +137,17 @@ void sunrise(unsigned int sec_speed) {
       if (w<=w_target) w = w+1;
     }
     for(int j=0; j<i; j++) {
-      strip.setPixelColor(strip.numPixels()/2+strip.numPixels()/4+j, strip.Color(r,g,b,w));
-      strip.setPixelColor(strip.numPixels()/2+strip.numPixels()/4-j, strip.Color(r,g,b,w));
-      strip.setPixelColor(strip.numPixels()/2-strip.numPixels()/4+j, strip.Color(r,g,b,w));
-      strip.setPixelColor(strip.numPixels()/2-strip.numPixels()/4-j, strip.Color(r,g,b,w));
+      strip1.setPixelColor(strip1.numPixels()/2+strip1.numPixels()/4+j, strip1.Color(r,g,b,w));
+      strip2.setPixelColor(strip2.numPixels()/2+strip2.numPixels()/4+j, strip2.Color(r,g,b,w));
+      strip1.setPixelColor(strip1.numPixels()/2+strip1.numPixels()/4-j, strip1.Color(r,g,b,w));
+      strip2.setPixelColor(strip2.numPixels()/2+strip2.numPixels()/4-j, strip2.Color(r,g,b,w));
+      strip1.setPixelColor(strip1.numPixels()/2-strip1.numPixels()/4+j, strip1.Color(r,g,b,w));
+      strip2.setPixelColor(strip2.numPixels()/2-strip2.numPixels()/4+j, strip2.Color(r,g,b,w));
+      strip1.setPixelColor(strip1.numPixels()/2-strip1.numPixels()/4-j, strip1.Color(r,g,b,w));
+      strip2.setPixelColor(strip2.numPixels()/2-strip2.numPixels()/4-j, strip2.Color(r,g,b,w));
     }
-    strip.show();
+    strip1.show();
+    strip2.show();
     delay(sec_speed*SECOND);
   }
 
@@ -128,8 +156,10 @@ void sunrise(unsigned int sec_speed) {
     if (g<=g_target) g = g+1;
     if (b<=b_target) b = b+1;
     if (w<=w_target) w = w+1;
-    setColor(strip.Color(r,g,b,w)); 
-    strip.show();
+    setColor(strip1.Color(r,g,b,w)); 
+    setColor(strip2.Color(r,g,b,w)); 
+    strip1.show();
+    strip2.show();
     delay(sec_speed*SECOND);
   }
 }
@@ -137,32 +167,42 @@ void sunrise(unsigned int sec_speed) {
 // plant light
 // every 5th led blue, others red (rrrrbrrrrbrrrrb...)
 void plantlight() {
-  for(int i=0; i<strip.numPixels(); i++) {
+  for(int i=0; i<strip1.numPixels(); i++) {
     if(i % 5 == 0) {
-      strip.setPixelColor(i, strip.Color(0,0,255,0)); // blue
+      strip1.setPixelColor(i, strip1.Color(0,0,255,0)); // blue
+      strip2.setPixelColor(i, strip2.Color(0,0,255,0)); // blue
     }
     else {
-      strip.setPixelColor(i, strip.Color(255,0,0,0)); // red
+      strip1.setPixelColor(i, strip1.Color(255,0,0,0)); // red
+      strip2.setPixelColor(i, strip2.Color(255,0,0,0)); // red
     }
   }
-  strip.show();
+  strip1.show();
+  strip2.show();
 }
 
 void colorTest() {
-  setColor(strip.Color(255, 0, 0, 0)); // Red
+  setColor(strip1.Color(255, 0, 0, 0)); // Red
+  setColor(strip2.Color(255, 0, 0, 0)); // Red
   delay(500);
-  setColor(strip.Color(0, 255, 0, 0)); // Green
+  setColor(strip1.Color(0, 255, 0, 0)); // Green
+  setColor(strip2.Color(0, 255, 0, 0)); // Green
   delay(500);
-  setColor(strip.Color(0, 0, 255, 0)); // Blue
+  setColor(strip1.Color(0, 0, 255, 0)); // Blue
+  setColor(strip2.Color(0, 0, 255, 0)); // Blue
   delay(500);
-  setColor(strip.Color(0, 0, 0, 255)); // White
+  setColor(strip1.Color(0, 0, 0, 255)); // White
+  setColor(strip2.Color(0, 0, 0, 255)); // White
   delay(500);
 }
 
 void setup() {
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(BRIGHTNESS);
+  strip1.begin();           // INITIALIZE NeoPixel strip1 object (REQUIRED)
+  strip2.begin();           // INITIALIZE NeoPixel strip1 object (REQUIRED)
+  strip1.show();            // Turn OFF all pixels ASAP
+  strip2.show();            // Turn OFF all pixels ASAP
+  strip1.setBrightness(BRIGHTNESS);
+  strip2.setBrightness(BRIGHTNESS);
 
   // Serial communication
   Serial.begin(9600);
@@ -178,33 +218,29 @@ void timedRoutine () {
   Serial.println("15:00");
   colorTest();
   daylight();
-  while(millis() < ctime+(4*HOUR+0*MINUTE)) pass;
+  while(millis() < ctime+(7*HOUR+0*MINUTE)) pass;
   ctime = millis();
   // 21:00
-  Serial.println("21:00");
+  Serial.println("00:00");
   sundown(30);
   moonlight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
   // 02:00
-  Serial.println("02:00");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
-  while(millis() < ctime+(3*HOUR)) pass;
-  ctime = millis();
-  // 05:00
   Serial.println("05:00");
   moonlight();
-  while(millis() < ctime+(2*HOUR)) pass;
+  while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
   // 03:00
-  Serial.println("03:00");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
+  Serial.println("10:00");
+  setColor(strip1.Color(0, 0, 0, 0)); // Off
+  setColor(strip2.Color(0, 0, 0, 0)); // Off
   sunrise(30);
   plantlight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
   // 12:00
-  Serial.println("12:00");
+  Serial.println("15:00");
   daylight();
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
