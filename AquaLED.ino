@@ -18,7 +18,7 @@ const unsigned long HOUR = SECOND * 3600;
 unsigned long ctime = 0;
 
 void setColor(uint32_t color) {
-  for(int i=0; i<strip.numPixels(); i++) {
+  for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, color);
   }
   strip.show();
@@ -26,7 +26,7 @@ void setColor(uint32_t color) {
 
 void setColorLow(uint32_t color) {
   int rnum = random(-10,10);
-  for(int i=10; i<strip.numPixels(); i++) {
+  for(int i=10; i<LED_COUNT; i++) {
     if(i==(28+rnum) || i==(43+rnum) || i==(88-rnum) || i==(103-rnum) || i==(118-rnum)) { 
       strip.setPixelColor(i, color);
     }
@@ -67,23 +67,23 @@ void sundown(unsigned int sec_speed) {
       if (w>0) w = w-1;
     }
     if (i <= 60) {
-      for(int j=i/2; j<(strip.numPixels()/2-i/2); j++) {
+      for(int j=i/2; j<(LED_COUNT/2-i/2); j++) {
         strip.setPixelColor(j, strip.Color(r,g,b,w));
       }
-      for(int j=strip.numPixels()/2+i/2; j<(strip.numPixels()-i/2); j++) {
+      for(int j=LED_COUNT/2+i/2; j<(LED_COUNT-i/2); j++) {
         strip.setPixelColor(j, strip.Color(r,g,b,w));
       }
       for(int j=0; j<i/2; j++) {
         strip.setPixelColor(j, strip.Color(0,0,0,0));
-        strip.setPixelColor((strip.numPixels()/2-j), strip.Color(0,0,0,0));
-        strip.setPixelColor((strip.numPixels()/2+j), strip.Color(0,0,0,0));
-        strip.setPixelColor((strip.numPixels()-j), strip.Color(0,0,0,0));
+        strip.setPixelColor((LED_COUNT/2-j), strip.Color(0,0,0,0));
+        strip.setPixelColor((LED_COUNT/2+j), strip.Color(0,0,0,0));
+        strip.setPixelColor((LED_COUNT-j), strip.Color(0,0,0,0));
       }
     }
     else {
-      for(int j=60/2; j<=(strip.numPixels()/2-60/2); j++) {
+      for(int j=60/2; j<=(LED_COUNT/2-60/2); j++) {
         strip.setPixelColor(j, strip.Color(r,g,b,w));
-        strip.setPixelColor((strip.numPixels()/2+j), strip.Color(r,g,b,w));
+        strip.setPixelColor((LED_COUNT/2+j), strip.Color(r,g,b,w));
       }
     }
     strip.show();
@@ -110,10 +110,10 @@ void sunrise(unsigned int sec_speed) {
       if (w<=w_target) w = w+1;
     }
     for(int j=0; j<i; j++) {
-      strip.setPixelColor(strip.numPixels()/2+strip.numPixels()/4+j, strip.Color(r,g,b,w));
-      strip.setPixelColor(strip.numPixels()/2+strip.numPixels()/4-j, strip.Color(r,g,b,w));
-      strip.setPixelColor(strip.numPixels()/2-strip.numPixels()/4+j, strip.Color(r,g,b,w));
-      strip.setPixelColor(strip.numPixels()/2-strip.numPixels()/4-j, strip.Color(r,g,b,w));
+      strip.setPixelColor(LED_COUNT/2+LED_COUNT/4+j, strip.Color(r,g,b,w));
+      strip.setPixelColor(LED_COUNT/2+LED_COUNT/4-j, strip.Color(r,g,b,w));
+      strip.setPixelColor(LED_COUNT/2-LED_COUNT/4+j, strip.Color(r,g,b,w));
+      strip.setPixelColor(LED_COUNT/2-LED_COUNT/4-j, strip.Color(r,g,b,w));
     }
     strip.show();
     delay(sec_speed*SECOND);
@@ -133,7 +133,7 @@ void sunrise(unsigned int sec_speed) {
 // plant light
 // every 5th led blue, others red (rrrrbrrrrbrrrrb...)
 void plantlight() {
-  for(int i=0; i<strip.numPixels(); i++) {
+  for(int i=0; i<LED_COUNT; i++) {
     if(i % 5 == 0) {
       strip.setPixelColor(i, strip.Color(0,0,255,0)); // blue
     }
