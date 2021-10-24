@@ -29,9 +29,9 @@ void setColor(uint32_t color) {
 }
 
 void setColorLow(uint32_t color) {
-  int rnum = random(-10,10);
-  for(int i=10; i<LED_COUNT; i++) {
-    if(i==(28+rnum) || i==(43+rnum) || i==(88-rnum) || i==(103-rnum) || i==(118-rnum)) { 
+  int rnum = random(-25,25);
+  for(int i=50; i<=70; i++) {
+    if(i==(50+rnum) || i==(55+rnum) || i==(60+rnum) || i==(65+rnum) || i==(70+rnum)) { 
       strip1.setPixelColor(i, color);
       strip2.setPixelColor(i, color);
     }
