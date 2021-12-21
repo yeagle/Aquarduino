@@ -25,9 +25,9 @@ void setColor(uint32_t color) {
 }
 
 void setColorLow(uint32_t color) {
-  int rnum = random(-10,10);
   for(int i=10; i<LED_COUNT; i++) {
-    if(i==(28+rnum) || i==(43+rnum) || i==(88-rnum) || i==(103-rnum) || i==(118-rnum)) { 
+    if(i==(15) || i==(30) || i==(45) || i==(60) ||
+      i==(72) || i==(87) || i==(102) || i==(117)) { 
       strip.setPixelColor(i, color);
     }
     else {
@@ -43,6 +43,18 @@ void daylight() {
 
 void moonlight() {
   setColorLow(strip.Color(3, 1, 70, 0));
+}
+
+void coloredStripe1(int pos, int len, uint32_t color) {
+  int s1 = 70-pos;
+  int s2 = 70+pos;
+  for(int i=s1; i<s1+len; i++) {
+    strip.setPixelColor(i, color);
+  }
+  for(int i=s2-len; i<s2; i++) {
+    strip.setPixelColor(i, color);
+  }
+  strip.show();
 }
 
 void sundown(unsigned int sec_speed) {
@@ -174,12 +186,16 @@ void timedRoutine () {
   Serial.println("17:00");
   colorTest();
   daylight();
+  coloredStripe1(23, 10, strip.Color(255,0,0,0));
+  coloredStripe1(48, 10, strip.Color(0,0,255,0));
   while(millis() < ctime+(4*HOUR+0*MINUTE)) pass;
   ctime = millis();
   // 21:00
   Serial.println("21:00");
   sundown(30);
   moonlight();
+  coloredStripe1(19, 1, strip.Color(0,20,0,0));
+  coloredStripe1(44, 1, strip.Color(20,0,0,0));
   while(millis() < ctime+(5*HOUR)) pass;
   ctime = millis();
   // 02:00
@@ -190,6 +206,8 @@ void timedRoutine () {
   // 05:00
   Serial.println("05:00");
   moonlight();
+  coloredStripe1(19, 1, strip.Color(0,20,0,0));
+  coloredStripe1(44, 1, strip.Color(20,0,0,0));
   while(millis() < ctime+(2*HOUR)) pass;
   ctime = millis();
   // 07:00
