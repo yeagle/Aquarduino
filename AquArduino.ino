@@ -26,8 +26,8 @@ void setColor(uint32_t color) {
 
 void setColorLow(uint32_t color) {
   for(int i=10; i<LED_COUNT; i++) {
-    if(i==(15) || i==(30) || i==(45) || i==(60) ||
-      i==(72) || i==(87) || i==(102) || i==(117)) { 
+    if(i==(15) || i==(45) || i==(60) ||
+      i==(72) || i==(102) || i==(117) || i==(132)) { 
       strip.setPixelColor(i, color);
     }
     else {
@@ -213,6 +213,7 @@ void timedRoutine () {
   // 
   Serial.println("07:00");
   setColor(strip.Color(0, 0, 0, 0)); // Off
+  coloredStripe1(35, 1, strip.Color(0,0,0,50));
   while(millis() < ctime+(2*HOUR)) pass;
   ctime = millis();
   // 
