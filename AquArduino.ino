@@ -20,35 +20,42 @@ const unsigned long MINUTE = SECOND * 60;
 const unsigned long HOUR = SECOND * 3600;
 unsigned long ctime = 0;
 
+void printTimeNow(DateTime now) {
+  char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
+  Serial.print(" (");
+  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  Serial.print(") ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
+}
+
 void setColor(uint32_t color) {
   for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, color);
   }
-  strip.show();
 }
 
 void setColorLow(uint32_t color) {
   for(int i=0; i<LED_COUNT; i++) {
-    if(i==(70-2) || i==(70-32) || i==(70-62) ||
-      i==(70+2) || i==(70+32) || i==(70+62)) { 
+    if(i >=33 && i < 37) { 
       strip.setPixelColor(i, color);
     }
     else {
       strip.setPixelColor(i, strip.Color(0,0,0,0));
     }
   }
-  strip.show();
 }
 
-void daylight() {
-  setColor(strip.Color(130, 70, 0, 150)); 
-}
-
-void moonlight() {
-  setColorLow(strip.Color(3, 1, 70, 0));
-}
-
-void coloredStripe(int pos, int len, uint32_t color) {
+void setColoredStripe(int pos, int len, uint32_t color) {
   int s1 = 70-pos;
   int s2 = 70+pos;
   for(int i=s1; i<s1+len; i++) {
@@ -57,10 +64,9 @@ void coloredStripe(int pos, int len, uint32_t color) {
   for(int i=s2-len; i<s2; i++) {
     strip.setPixelColor(i, color);
   }
-  strip.show();
 }
 
-void coloredStripeOnly(int pos, int len, uint32_t color) {
+void setColoredStripeOnly(int pos, int len, uint32_t color) {
   int s1 = 70-pos;
   int s2 = 70+pos;
   for(int i=0; i<LED_COUNT; i++) {
@@ -74,6 +80,36 @@ void coloredStripeOnly(int pos, int len, uint32_t color) {
       strip.setPixelColor(i, strip.Color(0, 0, 0, 0));
     }
   }
+}
+
+void lightOff() {
+  setColor(strip.Color(0,0,0,0)); 
+  strip.show();
+}
+
+void daylight() {
+  setColor(strip.Color(130, 70, 0, 150)); 
+  strip.show();
+}
+
+void daylightWithStripe() {
+  for(int i=0; i<LED_COUNT; i++) {
+    strip.setPixelColor(i, strip.Color(130, 70, 0, 150));
+  }
+  coloredStripe(23, 10, strip.Color(255,0,0,0));
+  coloredStripe(49, 10, strip.Color(0,0,255,0));
+  strip.show();
+}
+
+void moonlight() {
+  setColorLow(strip.Color(3, 1, 70, 0));
+  strip.show();
+}
+
+void moonlightWithStripe() {
+  setColorLow(strip.Color(3, 1, 70, 0));
+  coloredStripe(19, 1, strip.Color(0,20,0,0));
+  coloredStripe(44, 1, strip.Color(0,20,0,0));
   strip.show();
 }
 
@@ -208,136 +244,67 @@ void setup() {
 void rtcRoutine () {
   Serial.println("Start of rtc routine");
   DateTime now = rtc.now();
-  Serial.println("Hour now:");
-  Serial.print(now.hour(), DEC);
+  printTimeNow(now);
 
-  // 12-13 Uhr
   if (now.hour() >= 12 && now.hour() <13) 
   {
-  Serial.println("\nTime 12 - 13");
+  Serial.println("Time 12 - 13");
   ctime = millis();
   sunrise(10);
   daylight();
   while(millis() < ctime+(1*HOUR)) pass;
   }
-
-  // 13-21 Uhr
-  else if (now.hour() >= 13 && now.hour() <21) 
+  else if (now.hour() >= 13 && now.hour() <17) 
   {
-  Serial.println("\nTime 13 - 21");
+  Serial.println("Time 13 - 17");
   daylight();
-  coloredStripe(23, 10, strip.Color(255,0,0,0));
-  coloredStripe(49, 10, strip.Color(0,0,255,0));
   }
-
-  // 21-22 Uhr
+  else if (now.hour() >= 17 && now.hour() <21) 
+  {
+  Serial.println("Time 17 - 21");
+  daylightWithStripe();
+  }
   else if (now.hour() >= 21 && now.hour() <22) 
   {
-  Serial.println("\nTime 21 - 22");
+  Serial.println("Time 21 - 22");
   ctime = millis();
   sundown(30);
-  moonlight();
-  coloredStripe(19, 1, strip.Color(0,20,0,0));
-  coloredStripe(44, 1, strip.Color(20,0,0,0));
+  moonlightWithStripe();
   while(millis() < ctime+(1*HOUR)) pass;
   }
-
-  // 22-0 Uhr
   else if (now.hour() >= 22 && now.hour() <24) 
   {
-  Serial.println("\nTime 22 - 0");
-  moonlight();
-  coloredStripe(19, 1, strip.Color(0,20,0,0));
-  coloredStripe(44, 1, strip.Color(20,0,0,0));
+  Serial.println("Time 22 - 0");
+  moonlightWithStripe();
   }
-
-  // 0-6
   else if (now.hour() >= 0 && now.hour() <6) 
   {
-  Serial.println("\nTime 0 - 6");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
+  Serial.println("Time 0 - 6");
+  lightOff();
   }
-
-  // 6-8 Uhr
   else if (now.hour() >= 6 && now.hour() <8) 
   {
-  Serial.println("\nTime 6 - 8");
+  Serial.println("Time 6 - 8");
   moonlight();
-  coloredStripe(19, 1, strip.Color(0,20,0,0));
-  coloredStripe(44, 1, strip.Color(20,0,0,0));
   }
-
-  // 8-10 Uhr
   else if (now.hour() >= 8 && now.hour() <10) 
   {
-  Serial.println("\nTime 8 - 10");
-  coloredStripeOnly(35, 1, strip.Color(0,0,0,100));
+  Serial.println("Time 8 - 10");
+  setColoredStripeOnly(35, 1, strip.Color(0,0,0,100));
+  strip.show();
   }
-
-  // 8-12 Uhr
-  else if (now.hour() >= 8 && now.hour() <12) 
+  else if (now.hour() >= 10 && now.hour() <12) 
   {
-  Serial.println("\nTime 10 - 12");
+  Serial.println("Time 10 - 12");
   plantlight();
   }
 
   delay(1*MINUTE);
 }
 
-void timedRoutine () {
-  Serial.println("Start of timed routine");
-  ctime = millis();
-  // 
-  Serial.println("17:00");
-  colorTest();
-  daylight();
-  coloredStripe(23, 10, strip.Color(255,0,0,0));
-  coloredStripe(49, 10, strip.Color(0,0,255,0));
-  while(millis() < ctime+(4*HOUR+0*MINUTE)) pass;
-  ctime = millis();
-  // 
-  Serial.println("21:00");
-  sundown(30);
-  moonlight();
-  coloredStripe(19, 1, strip.Color(0,20,0,0));
-  coloredStripe(44, 1, strip.Color(20,0,0,0));
-  while(millis() < ctime+(3*HOUR)) pass;
-  ctime = millis();
-  // 
-  Serial.println("00:00");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
-  while(millis() < ctime+(5*HOUR+30*MINUTE)) pass;
-  ctime = millis();
-  //
-  Serial.println("05:30");
-  moonlight();
-  coloredStripe(19, 1, strip.Color(0,20,0,0));
-  coloredStripe(44, 1, strip.Color(20,0,0,0));
-  while(millis() < ctime+(1*HOUR+30*MINUTE)) pass;
-  ctime = millis();
-  // 
-  Serial.println("07:00");
-  setColor(strip.Color(0, 0, 0, 0)); // Off
-  coloredStripe(35, 1, strip.Color(0,0,0,50));
-  while(millis() < ctime+(2*HOUR)) pass;
-  ctime = millis();
-  // 
-  Serial.println("09:00");
-  plantlight();
-  while(millis() < ctime+(3*HOUR)) pass;
-  ctime = millis();
-  // 
-  Serial.println("12:00");
-  sunrise(10);
-  daylight();
-  while(millis() < ctime+(5*HOUR)) pass;
-  ctime = millis();
-}
-
 void loop() {
-  Serial.println("Loop start");
+  Serial.println("Loop");
   rtcRoutine();
-  //timedRoutine();
   //moonlight();
   //plantlight();
   //sunrise(0);
