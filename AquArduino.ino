@@ -96,8 +96,8 @@ void daylightWithStripe() {
   for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(130, 70, 0, 150));
   }
-  coloredStripe(23, 10, strip.Color(255,0,0,0));
-  coloredStripe(49, 10, strip.Color(0,0,255,0));
+  setColoredStripe(23, 10, strip.Color(255,0,0,0));
+  setColoredStripe(49, 10, strip.Color(0,0,255,0));
   strip.show();
 }
 
@@ -108,8 +108,8 @@ void moonlight() {
 
 void moonlightWithStripe() {
   setColorLow(strip.Color(3, 1, 70, 0));
-  coloredStripe(19, 1, strip.Color(0,20,0,0));
-  coloredStripe(44, 1, strip.Color(0,20,0,0));
+  setColoredStripe(19, 1, strip.Color(0,20,0,0));
+  setColoredStripe(44, 1, strip.Color(0,20,0,0));
   strip.show();
 }
 
