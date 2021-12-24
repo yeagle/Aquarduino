@@ -214,12 +214,19 @@ void plantlight() {
 
 void colorTest() {
   setColor(strip.Color(255, 0, 0, 0)); // Red
+  strip.show();
   delay(500);
   setColor(strip.Color(0, 255, 0, 0)); // Green
+  strip.show();
   delay(500);
   setColor(strip.Color(0, 0, 255, 0)); // Blue
+  strip.show();
   delay(500);
   setColor(strip.Color(0, 0, 0, 255)); // White
+  strip.show();
+  delay(500);
+  setColor(strip.Color(255, 255, 255, 255)); // White+RGB
+  strip.show();
   delay(500);
 }
 
