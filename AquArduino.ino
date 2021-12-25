@@ -46,7 +46,7 @@ void setColor(uint32_t color) {
 
 void setColorLow(uint32_t color) {
   for(int i=0; i<LED_COUNT; i++) {
-    if(i >=33 && i < 37) { 
+    if(i >=33 && i < 37 || i >=(70+33) && i < (70+37)) { 
       strip.setPixelColor(i, color);
     }
     else {
@@ -108,8 +108,9 @@ void moonlight() {
 
 void moonlightWithStripe() {
   setColorLow(strip.Color(3, 1, 70, 0));
-  setColoredStripe(19, 1, strip.Color(0,20,0,0));
-  setColoredStripe(44, 1, strip.Color(0,20,0,0));
+  setColoredStripe(10, 1, strip.Color(0,20,0,0));
+  //setColoredStripe(19, 1, strip.Color(0,20,0,0));
+  //setColoredStripe(44, 1, strip.Color(0,20,0,0));
   strip.show();
 }
 
