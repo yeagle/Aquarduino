@@ -173,6 +173,9 @@ void sunrise(unsigned int sec_speed) {
   int b = 0;
   int w = 0;
 
+  setColor(strip.Color(0,0,0,0)); 
+  strip.show();
+
   for(int i=0; i<35; i++) {
     if (r<=r_target) r = r+2;
     if (i != 0 && i % 5 == 0) {
