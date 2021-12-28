@@ -15,6 +15,8 @@ RTC_DS3231 rtc;
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800); // Declare NeoPixel strip object
 
+//int rnum=0; // variable for random function
+
 const unsigned long SECOND = 1000;
 const unsigned long MINUTE = SECOND * 60;
 const unsigned long HOUR = SECOND * 3600;
@@ -243,7 +245,8 @@ void setup() {
   Serial.begin(9600);
 
   // for random function
-  randomSeed(analogRead(0));
+  //randomSeed(analogRead(0));
+  //rnum = random(0,100);
 
   // start rtc
   rtc.begin();
@@ -260,6 +263,7 @@ void rtcRoutine () {
   if (now.hour() >= 12 && now.hour() <13) 
   {
   Serial.println("Time 12 - 13");
+  //rnum = random(0,100);
   ctime = millis();
   sunrise(10);
   daylight();
@@ -279,7 +283,7 @@ void rtcRoutine () {
   {
   Serial.println("Time 21 - 22");
   ctime = millis();
-  sundown(30);
+  sundown(15);
   moonlightWithStripe();
   while(millis() < ctime+(1*HOUR)) pass;
   }
