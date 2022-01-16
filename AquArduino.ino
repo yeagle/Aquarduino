@@ -94,6 +94,11 @@ void daylight() {
   strip.show();
 }
 
+void brightlight() {
+  setColor(strip.Color(200,200,200,200)); 
+  strip.show();
+}
+
 void daylightWithStripe() {
   for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(130, 70, 0, 150));
@@ -272,7 +277,7 @@ void rtcRoutine () {
   else if (now.hour() >= 13 && now.hour() <17) 
   {
   Serial.println("Time 13 - 17");
-  daylight();
+  brightlight();
   }
   else if (now.hour() >= 17 && now.hour() <21) 
   {
