@@ -46,17 +46,6 @@ void setColor(uint32_t color) {
   }
 }
 
-void setColorLow(uint32_t color) {
-  for(int i=0; i<LED_COUNT; i++) {
-    if(i >=33 && i < 37 || i >=(70+33) && i < (70+37)) { 
-      strip.setPixelColor(i, color);
-    }
-    else {
-      strip.setPixelColor(i, strip.Color(0,0,0,0));
-    }
-  }
-}
-
 void setColoredStripe(int pos, int len, uint32_t color) {
   int s1 = 70-pos;
   int s2 = 70+pos;
@@ -95,7 +84,7 @@ void daylight() {
 }
 
 void brightlight() {
-  setColor(strip.Color(200,200,200,200)); 
+  setColor(strip.Color(150,150,150,150)); 
   strip.show();
 }
 
@@ -109,13 +98,13 @@ void daylightWithStripe() {
 }
 
 void moonlight() {
-  setColorLow(strip.Color(3, 1, 70, 0));
+  setColoredStripeOnly(34, 2, strip.Color(3, 1, 70, 0));
   strip.show();
 }
 
 void moonlightWithStripe() {
-  setColorLow(strip.Color(3, 1, 70, 0));
-  setColoredStripe(10, 1, strip.Color(0,20,0,0));
+  setColoredStripeOnly(34, 2, strip.Color(3, 1, 70, 0));
+  setColoredStripe(10, 1, strip.Color(0,5,0,0));
   //setColoredStripe(19, 1, strip.Color(0,20,0,0));
   //setColoredStripe(44, 1, strip.Color(0,20,0,0));
   strip.show();
@@ -325,7 +314,10 @@ void rtcRoutine () {
 void loop() {
   Serial.println("Loop");
   rtcRoutine();
+  //brightlight();
+  //daylight();
   //moonlight();
+  //moonlightWithStripe();
   //plantlight();
   //sunrise(0);
   //sundown(0);
