@@ -52,19 +52,6 @@ void setColor(uint32_t color) {
   }
 }
 
-void setColorLow(uint32_t color) {
-  for(int i=0; i<=LED_COUNT; i++) {
-    if(i >=55 && i < 65) { 
-      strip1.setPixelColor(i, color);
-      strip2.setPixelColor(i, color);
-    }
-    else {
-      strip1.setPixelColor(i, strip1.Color(0,0,0,0));
-      strip2.setPixelColor(i, strip2.Color(0,0,0,0));
-    }
-  }
-}
-
 void setColoredStripe(int pos, int len, uint32_t color) {
   for(int i=pos; i<pos+len; i++) {
     strip1.setPixelColor(i, color);
@@ -101,7 +88,7 @@ void lightBright() {
 }
 
 void moonlight() {
-  setColorLow(strip1.Color(3, 1, 70, 0));
+  setColoredStripeOnly(55,10,strip1.Color(3, 1, 70, 0));
   show();
 }
 
@@ -266,7 +253,7 @@ void rtcRoutine () {
   //daylight();
   lightBright();
   }
-  else if (now.hour() >= 22 && now.hour() <24) 
+  else if (now.hour() >= 22 && now.hour() <23) 
   {
   Serial.println("Time 22 - 23");
   ctime = millis();
@@ -274,20 +261,26 @@ void rtcRoutine () {
   moonlight();
   while(millis() < ctime+(1*HOUR)) pass;
   }
-  else if (now.hour() >= 22 && now.hour() <24) 
+  else if (now.hour() >= 23 && now.hour() <24) 
   {
   Serial.println("Time 23 - 0");
   moonlight();
   }
-  else if (now.hour() >= 0 && now.hour() <15) 
+  else if (now.hour() >= 0 && now.hour() <6) 
   {
-  Serial.println("Time 0 - 15");
+  Serial.println("Time 0 - 6");
   lightOff();
   }
   else if (now.hour() >= 6 && now.hour() <8) 
   {
   Serial.println("Time 6 - 8");
   moonlight();
+  }
+  else if (now.hour() >= 8 && now.hour() <10) 
+  {
+  Serial.println("Time 8 - 10");
+  setColoredStripeOnly(20,1,strip1.Color(0, 0, 0, 100));
+  setColoredStripe(60,1,strip1.Color(0, 0, 0, 100));
   }
   else if (now.hour() >= 10 && now.hour() <15) 
   {
