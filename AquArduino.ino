@@ -92,8 +92,8 @@ void daylightWithStripe() {
   for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(130, 70, 0, 150));
   }
-  setColoredStripe(23, 10, strip.Color(255,0,0,0));
-  setColoredStripe(49, 10, strip.Color(0,0,255,0));
+  setColoredStripe(23, 10, strip.Color(200,0,40,0));
+  setColoredStripe(49, 10, strip.Color(200,0,40,0));
   strip.show();
 }
 
@@ -225,6 +225,12 @@ void colorTest() {
   setColor(strip.Color(0, 0, 0, 255)); // White
   strip.show();
   delay(500);
+  setColor(strip.Color(0, 0, 0, 0)); // Off
+  strip.show();
+  delay(500);
+  setColor(strip.Color(255, 255, 255, 0)); // RGB
+  strip.show();
+  delay(500);
   setColor(strip.Color(255, 255, 255, 255)); // White+RGB
   strip.show();
   delay(500);
@@ -268,10 +274,15 @@ void rtcRoutine () {
   Serial.println("Time 13 - 17");
   brightlight();
   }
-  else if (now.hour() >= 17 && now.hour() <21) 
+  else if (now.hour() >= 17 && now.hour() <20) 
   {
-  Serial.println("Time 17 - 21");
+  Serial.println("Time 17 - 20");
   daylightWithStripe();
+  }
+  else if (now.hour() >= 20 && now.hour() <21) 
+  {
+  Serial.println("Time 20 - 21");
+  daylight();
   }
   else if (now.hour() >= 21 && now.hour() <22) 
   {
