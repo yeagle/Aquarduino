@@ -92,8 +92,8 @@ void daylightWithStripe() {
   for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(130, 70, 0, 150));
   }
-  setColoredStripe(23, 10, strip.Color(200,0,40,0));
-  setColoredStripe(49, 10, strip.Color(200,0,40,0));
+  setColoredStripe(23, 10, strip.Color(200,0,50,0));
+  setColoredStripe(49, 10, strip.Color(200,0,50,0));
   strip.show();
 }
 
@@ -200,7 +200,7 @@ void sunrise(unsigned int sec_speed) {
 
 // plant light
 // every 5th led blue, others red (rrrrbrrrrbrrrrb...)
-void plantlight() {
+void plantlight2() {
   for(int i=0; i<LED_COUNT; i++) {
     if(i % 5 == 0) {
       strip.setPixelColor(i, strip.Color(0,0,255,0)); // blue
@@ -208,6 +208,13 @@ void plantlight() {
     else {
       strip.setPixelColor(i, strip.Color(255,0,0,0)); // red
     }
+  }
+  strip.show();
+}
+
+void plantlight() {
+  for(int i=0; i<LED_COUNT; i++) {
+    strip.setPixelColor(i, strip.Color(200,0,50,0)); // blue
   }
   strip.show();
 }
@@ -310,8 +317,7 @@ void rtcRoutine () {
   else if (now.hour() >= 8 && now.hour() <10) 
   {
   Serial.println("Time 8 - 10");
-  setColoredStripeOnly(35, 1, strip.Color(0,0,0,100));
-  strip.show();
+  plantlight2();
   }
   else if (now.hour() >= 10 && now.hour() <12) 
   {
