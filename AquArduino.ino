@@ -92,8 +92,8 @@ void daylightWithStripe() {
   for(int i=0; i<LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(130, 70, 0, 150));
   }
-  setColoredStripe(23, 10, strip.Color(200,0,50,0));
-  setColoredStripe(49, 10, strip.Color(200,0,50,0));
+  setColoredStripe(30, 10, strip.Color(0,200,0,0));
+  setColoredStripe(53, 10, strip.Color(0,0,200,0));
   strip.show();
 }
 
@@ -317,7 +317,7 @@ void rtcRoutine () {
   else if (now.hour() >= 8 && now.hour() <10) 
   {
   Serial.println("Time 8 - 10");
-  plantlight2();
+  plantlight();
   }
   else if (now.hour() >= 10 && now.hour() <12) 
   {
@@ -338,6 +338,7 @@ void loop() {
   //plantlight();
   //sunrise(0);
   //sundown(0);
+  //daylightWithStripe();
   //delay(1*SECOND);
 }
 
