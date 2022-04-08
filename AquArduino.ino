@@ -178,17 +178,10 @@ void sunrise(unsigned int sec_speed) {
 }
 
 // plant light
-// every 5th led blue, others red (rrrrbrrrrbrrrrb...)
 void plantlight() {
   for(int i=0; i<LED_COUNT; i++) {
-    if(i % 5 == 0) {
-      strip1.setPixelColor(i, strip1.Color(0,0,255,0)); // blue
-      strip2.setPixelColor(i, strip2.Color(0,0,255,0)); // blue
-    }
-    else {
-      strip1.setPixelColor(i, strip1.Color(255,0,0,0)); // red
-      strip2.setPixelColor(i, strip2.Color(255,0,0,0)); // red
-    }
+    strip1.setPixelColor(i, strip1.Color(200,0,50,0));
+    strip2.setPixelColor(i, strip2.Color(200,0,50,0));
   }
   show();
 }
