@@ -49,7 +49,6 @@ void setColor(uint32_t color) {
   for(int i=0; i<LED_COUNT; i++) {
     strip1.setPixelColor(i, color);
     strip2.setPixelColor(i, color);
-    show(); // pix-by-pix
   }
 }
 
@@ -57,7 +56,6 @@ void setColoredStripe(int pos, int len, uint32_t color) {
   for(int i=pos; i<pos+len; i++) {
     strip1.setPixelColor(i, color);
     strip2.setPixelColor(i, color);
-    show(); // pix-by-pix
   }
 }
 
@@ -66,12 +64,10 @@ void setColoredStripeOnly(int pos, int len, uint32_t color) {
     if(i>=pos && i<pos+len) {
       strip1.setPixelColor(i, color);
       strip2.setPixelColor(i, color);
-      show(); // pix-by-pix
     }
     else {
       strip1.setPixelColor(i, strip1.Color(0, 0, 0, 0));
       strip2.setPixelColor(i, strip2.Color(0, 0, 0, 0));
-      show(); // pix-by-pix
     }
   }
 }
@@ -121,21 +117,18 @@ void sundown(unsigned int sec_speed) {
       for(int j=i/2; j<(LED_COUNT-i/2); j++) {
         strip1.setPixelColor(j, strip1.Color(r,g,b,w));
         strip2.setPixelColor(j, strip2.Color(r,g,b,w));
-        show(); // pix-by-pix
       }
       for(int j=0; j<i/2; j++) {
         strip1.setPixelColor(j, strip1.Color(0,0,0,0));
         strip2.setPixelColor(j, strip2.Color(0,0,0,0));
         strip1.setPixelColor((LED_COUNT-j), strip1.Color(0,0,0,0));
         strip2.setPixelColor((LED_COUNT-j), strip2.Color(0,0,0,0));
-        show(); // pix-by-pix
       }
     }
     else {
       for(int j=60/2; j<=(LED_COUNT-60/2); j++) {
         strip1.setPixelColor(j, strip1.Color(r,g,b,w));
         strip2.setPixelColor(j, strip2.Color(r,g,b,w));
-        show(); // pix-by-pix
       }
     }
     show();
@@ -168,7 +161,6 @@ void sunrise(unsigned int sec_speed) {
       strip2.setPixelColor(LED_COUNT/2+j, strip2.Color(r,g,b,w));
       strip1.setPixelColor(LED_COUNT/2-j, strip1.Color(r,g,b,w));
       strip2.setPixelColor(LED_COUNT/2-j, strip2.Color(r,g,b,w));
-      show(); // pix-by-pix
     }
     show();
     delay(sec_speed*SECOND);
@@ -190,7 +182,6 @@ void plantlight() {
   for(int i=0; i<LED_COUNT; i++) {
     strip1.setPixelColor(i, strip1.Color(200,0,50,0));
     strip2.setPixelColor(i, strip2.Color(200,0,50,0));
-    show(); // pix-by-pix
   }
   show();
 }
