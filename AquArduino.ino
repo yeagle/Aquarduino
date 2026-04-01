@@ -2,8 +2,8 @@
 #include <RTClib.h>
 
 #define LED_PIN     6
-#define LED_PIN2    9 
-#define NUM_LEDS  144 
+#define LED_PIN2    3 
+#define NUM_LEDS  73 
 #define COLOR_ORDER GRB
 #define LED_TYPE WS2812B
 
@@ -43,6 +43,11 @@ void showLEDs() {
   FastLED.show();
 }
 
+void clearLEDs() {
+  FastLED.clear();
+  FastLED.show();
+}
+
 void setColor(struct Color color) {
   for(int i=0; i<NUM_LEDS; i++) {
     setLED(i, color);
@@ -77,8 +82,7 @@ void setColoredStripeOnly(int pos, int len, struct Color color) {
 }
 
 void lightOff() {
-  setColor(colorFn(0,0,0,0)); 
-  showLEDs();
+  clearLEDs();
 }
 
 void daylight() {
@@ -222,7 +226,7 @@ void plantlight() {
 }
 
 void colorTest(int wait) {
-  for (int i=0; i-30<NUM_LEDS; i++) {
+  for (int i=0; i-30<=NUM_LEDS; i++) {
     if (i >=  0 && i- 0 < NUM_LEDS) setLED(i,colorFn(255, 0, 0, 0));
     if (i >= 10 && i-10 < NUM_LEDS) setLED(i-10,colorFn(0, 255, 0, 0));
     if (i >= 20 && i-20 < NUM_LEDS) setLED(i-20,colorFn(0, 0, 255, 0));
@@ -255,7 +259,7 @@ void rtcRoutine () {
   else if (now.hour() >= 17 && now.hour() <20) 
   {
   Serial.println("Time 17 - 20");
-  daylightWithStripe();
+  daylight();
   }
   else if (now.hour() >= 20 && now.hour() <21) 
   {
@@ -267,23 +271,32 @@ void rtcRoutine () {
   Serial.println("Time 21 - 22");
   ctime = millis();
   sundown(15);
-  moonlightWithStripe();
+  moonlight();
   while(millis() < ctime+(1*HOUR)) pass;
   }
   else if (now.hour() >= 22 && now.hour() <24) 
   {
   Serial.println("Time 22 - 0");
-  moonlightWithStripe();
+  moonlight();
   }
   else if (now.hour() >= 0 && now.hour() <6) 
   {
   Serial.println("Time 0 - 6");
   lightOff();
   }
-  else if (now.hour() >= 6 && now.hour() <8) 
+  else if (now.hour() >= 6 && now.hour() <7) 
   {
-  Serial.println("Time 6 - 8");
+  Serial.println("Time 6 - 7");
   moonlight();
+  }
+  else if (now.hour() >= 7 && now.hour() <8) 
+  {
+  Serial.println("Time 7 - 8");
+  //rnum = random(0,100);
+  ctime = millis();
+  sunrise(10);
+  plantlight();
+  while(millis() < ctime+(1*HOUR)) pass;
   }
   else if (now.hour() >= 8 && now.hour() <10) 
   {
@@ -342,10 +355,10 @@ void setup() {
 void loop() {
   Serial.println("Loop");
 
-  //rtcRoutine();
+  rtcRoutine();
   //brightlight();
   //daylight();
-  moonlight();
+  //moonlight();
   //moonlightWithStripe();
   //plantlight();
   //sunrise(0);

@@ -1,3 +1,5 @@
+PORT = /dev/ttyACM0
+
 all: hex
 
 hex:
@@ -6,4 +8,4 @@ hex:
 
 do_upload:
 	cd ..
-	arduino-cli -v upload -p /dev/ttyACM0 -v --fqbn arduino:megaavr:nona4809 rtc-setup.ino
+	arduino-cli -v upload -p $(PORT) -v --fqbn arduino:megaavr:nona4809 rtc-setup.ino
