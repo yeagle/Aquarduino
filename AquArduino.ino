@@ -86,12 +86,12 @@ void lightOff() {
 }
 
 void daylight() {
-  setColor(colorFn(130, 70, 0, 150)); 
+  setColor(colorFn(100, 50, 0, 120)); 
   showLEDs();
 }
 
 void brightlight() {
-  setColor(colorFn(150,150,150,150)); 
+  setColor(colorFn(120,120,120,120)); 
   showLEDs();
 }
 
@@ -137,24 +137,18 @@ void sundown(unsigned int sec_speed) {
     if (i % 3 == 0) {
       if (w>0) w = w-1;
     }
-    if (i <= 60) {
-      for(int j=i/2; j<(NUM_LEDS/2-i/2); j++) {
-        setLED(j, colorFn(r,g,b,w));
-      }
-      for(int j=NUM_LEDS/2+i/2; j<(NUM_LEDS-i/2); j++) {
+    if (i <= (NUM_LEDS/2+10)) {
+      for(int j=(NUM_LEDS/2-(NUM_LEDS/2 - i/2)); j<(NUM_LEDS/2-i/2); j++) {
         setLED(j, colorFn(r,g,b,w));
       }
       for(int j=0; j<i/2; j++) {
         setLED(j, colorFn(0,0,0,0));
-        setLED((NUM_LEDS/2-j), colorFn(0,0,0,0));
-        setLED((NUM_LEDS/2+j), colorFn(0,0,0,0));
         setLED((NUM_LEDS-j), colorFn(0,0,0,0));
       }
     }
     else {
-      for(int j=60/2; j<=(NUM_LEDS/2-60/2); j++) {
+      for(int j=(NUM_LEDS/2-(NUM_LEDS/2 - (NUM_LEDS/2+10)/2)); j<(NUM_LEDS/2-(NUM_LEDS/2+10)/2); j++) {
         setLED(j, colorFn(r,g,b,w));
-        setLED((NUM_LEDS/2+j), colorFn(r,g,b,w));
       }
     }
     showLEDs();
@@ -178,16 +172,14 @@ void sunrise(unsigned int sec_speed) {
   setColor(colorFn(0,0,0,0)); 
   showLEDs();
 
-  for(int i=0; i<35; i++) {
+  for(int i=0; i<(NUM_LEDS/2); i++) {
     if (r<=r_target) r = r+2;
     if (i != 0 && i % 5 == 0) {
       if (w<=w_target) w = w+1;
     }
     for(int j=0; j<i; j++) {
-      setLED(NUM_LEDS/2+NUM_LEDS/4+j, colorFn(r,g,b,w));
-      setLED(NUM_LEDS/2+NUM_LEDS/4-j, colorFn(r,g,b,w));
-      setLED(NUM_LEDS/2-NUM_LEDS/4+j, colorFn(r,g,b,w));
-      setLED(NUM_LEDS/2-NUM_LEDS/4-j, colorFn(r,g,b,w));
+      setLED(NUM_LEDS/2+j, colorFn(r,g,b,w));
+      setLED(NUM_LEDS/2-j, colorFn(r,g,b,w));
     }
     showLEDs();
     delay(sec_speed*SECOND);
@@ -264,15 +256,15 @@ void rtcRoutine () {
   else if (now.hour() >= 20 && now.hour() <21) 
   {
   Serial.println("Time 20 - 21");
-  daylight();
-  }
-  else if (now.hour() >= 21 && now.hour() <22) 
-  {
-  Serial.println("Time 21 - 22");
   ctime = millis();
   sundown(15);
   moonlight();
   while(millis() < ctime+(1*HOUR)) pass;
+  }
+  else if (now.hour() >= 21 && now.hour() <22) 
+  {
+  Serial.println("Time 21 - 22");
+  moonlight();
   }
   else if (now.hour() >= 22 && now.hour() <24) 
   {
@@ -292,16 +284,12 @@ void rtcRoutine () {
   else if (now.hour() >= 7 && now.hour() <8) 
   {
   Serial.println("Time 7 - 8");
-  //rnum = random(0,100);
-  ctime = millis();
-  sunrise(10);
-  plantlight();
-  while(millis() < ctime+(1*HOUR)) pass;
+  moonlight();
   }
   else if (now.hour() >= 8 && now.hour() <10) 
   {
   Serial.println("Time 8 - 10");
-  plantlight();
+  lightOff();
   }
   else if (now.hour() >= 10 && now.hour() <12) 
   {

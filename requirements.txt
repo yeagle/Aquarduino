@@ -1,3 +1,4 @@
 arduino-cli core install arduino:megaavr
+arduino-cli lib install "FastLED"
 arduino-cli lib install "Adafruit NeoPixel"
 arduino-cli lib install rtclib
