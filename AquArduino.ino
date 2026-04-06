@@ -1,13 +1,15 @@
 #include <FastLED.h>
 #include <RTClib.h>
 
-#define LED_PIN     6
-#define LED_PIN2    9 
-#define NUM_LEDS  144 
+#define LED_PIN  6
+#define LED_PIN2 3 
+#define NUM_LEDS 73
 #define COLOR_ORDER GRB
 #define LED_TYPE WS2812B
 
 #define pass (void)0
+
+#define MOONSIZE 2
 
 RTC_DS3231 rtc;
 CRGB leds[NUM_LEDS];
@@ -23,6 +25,9 @@ const unsigned long SECOND = 1000;
 const unsigned long MINUTE = SECOND * 60;
 const unsigned long HOUR = SECOND * 3600;
 unsigned long ctime = 0;
+
+unsigned int moon_loc = NUM_LEDS/2;
+unsigned int moon_loc_old = moon_loc-1;
 
 struct Color colorFn(int r, int g, int b, int w) {
   struct Color returnColor = {r,g,b,w};
@@ -43,6 +48,11 @@ void showLEDs() {
   FastLED.show();
 }
 
+void clearLEDs() {
+  FastLED.clear();
+  FastLED.show();
+}
+
 void setColor(struct Color color) {
   for(int i=0; i<NUM_LEDS; i++) {
     setLED(i, color);
@@ -50,24 +60,15 @@ void setColor(struct Color color) {
 }
 
 void setColoredStripe(int pos, int len, struct Color color) {
-  int s1 = 70-pos;
-  int s2 = 70+pos;
-  for(int i=s1; i<s1+len; i++) {
-    setLED(i, color);
-  }
-  for(int i=s2-len; i<s2; i++) {
+  for(int i=pos; i<pos+len; i++) {
     setLED(i, color);
   }
 }
 
 void setColoredStripeOnly(int pos, int len, struct Color color) {
-  int s1 = 70-pos;
-  int s2 = 70+pos;
+
   for(int i=0; i<NUM_LEDS; i++) {
-    if(i>=s1 && i<s1+len) {
-      setLED(i, color);
-    }
-    else if(i>=s2-len && i<s2) {
+    if(i>=pos && i<pos+len) {
       setLED(i, color);
     }
     else {
@@ -77,17 +78,16 @@ void setColoredStripeOnly(int pos, int len, struct Color color) {
 }
 
 void lightOff() {
-  setColor(colorFn(0,0,0,0)); 
-  showLEDs();
+  clearLEDs();
 }
 
 void daylight() {
-  setColor(colorFn(130, 70, 0, 150)); 
+  setColor(colorFn(100, 50, 0, 120)); 
   showLEDs();
 }
 
 void brightlight() {
-  setColor(colorFn(150,150,150,150)); 
+  setColor(colorFn(120,120,120,120)); 
   showLEDs();
 }
 
@@ -101,12 +101,40 @@ void daylightWithStripe() {
 }
 
 void moonlight() {
-  setColoredStripeOnly(34, 2, colorFn(3, 1, 70, 0));
+  setColoredStripeOnly(34, MOONSIZE, colorFn(3, 1, 70, 0));
   showLEDs();
 }
 
+void travellingMoonlight(int wait) {
+  setColoredStripeOnly(moon_loc, MOONSIZE, colorFn(3, 1, 70, 0));
+  showLEDs();
+
+  if (moon_loc_old <= moon_loc) {
+    if (moon_loc < (NUM_LEDS-MOONSIZE)) {
+      moon_loc_old = moon_loc;
+      moon_loc++;
+    }
+    else {
+      moon_loc_old = moon_loc;
+      moon_loc--;
+    }
+  }
+  else if (moon_loc_old > moon_loc) {
+    if (moon_loc > 0) {
+      moon_loc_old = moon_loc;
+      moon_loc--;
+    }
+    else {
+      moon_loc_old = moon_loc;
+      moon_loc++;
+    }
+  }
+
+  delay(wait);
+}
+
 void moonlightWithStripe() {
-  setColoredStripeOnly(34, 2, colorFn(3, 1, 70, 0));
+  setColoredStripeOnly(34, MOONSIZE, colorFn(3, 1, 70, 0));
   setColoredStripe(10, 1, colorFn(0,5,0,0));
   //setColoredStripe(19, 1, colorFn(0,20,0,0));
   //setColoredStripe(44, 1, colorFn(0,20,0,0));
@@ -133,24 +161,18 @@ void sundown(unsigned int sec_speed) {
     if (i % 3 == 0) {
       if (w>0) w = w-1;
     }
-    if (i <= 60) {
-      for(int j=i/2; j<(NUM_LEDS/2-i/2); j++) {
-        setLED(j, colorFn(r,g,b,w));
-      }
-      for(int j=NUM_LEDS/2+i/2; j<(NUM_LEDS-i/2); j++) {
+    if (i <= (NUM_LEDS/2+10)) {
+      for(int j=(NUM_LEDS/2-(NUM_LEDS/2 - i/2)); j<(NUM_LEDS/2-i/2); j++) {
         setLED(j, colorFn(r,g,b,w));
       }
       for(int j=0; j<i/2; j++) {
         setLED(j, colorFn(0,0,0,0));
-        setLED((NUM_LEDS/2-j), colorFn(0,0,0,0));
-        setLED((NUM_LEDS/2+j), colorFn(0,0,0,0));
         setLED((NUM_LEDS-j), colorFn(0,0,0,0));
       }
     }
     else {
-      for(int j=60/2; j<=(NUM_LEDS/2-60/2); j++) {
+      for(int j=(NUM_LEDS/2-(NUM_LEDS/2 - (NUM_LEDS/2+10)/2)); j<(NUM_LEDS/2-(NUM_LEDS/2+10)/2); j++) {
         setLED(j, colorFn(r,g,b,w));
-        setLED((NUM_LEDS/2+j), colorFn(r,g,b,w));
       }
     }
     showLEDs();
@@ -174,16 +196,14 @@ void sunrise(unsigned int sec_speed) {
   setColor(colorFn(0,0,0,0)); 
   showLEDs();
 
-  for(int i=0; i<35; i++) {
+  for(int i=0; i<(NUM_LEDS/2); i++) {
     if (r<=r_target) r = r+2;
     if (i != 0 && i % 5 == 0) {
       if (w<=w_target) w = w+1;
     }
     for(int j=0; j<i; j++) {
-      setLED(NUM_LEDS/2+NUM_LEDS/4+j, colorFn(r,g,b,w));
-      setLED(NUM_LEDS/2+NUM_LEDS/4-j, colorFn(r,g,b,w));
-      setLED(NUM_LEDS/2-NUM_LEDS/4+j, colorFn(r,g,b,w));
-      setLED(NUM_LEDS/2-NUM_LEDS/4-j, colorFn(r,g,b,w));
+      setLED(NUM_LEDS/2+j, colorFn(r,g,b,w));
+      setLED(NUM_LEDS/2-j, colorFn(r,g,b,w));
     }
     showLEDs();
     delay(sec_speed*SECOND);
@@ -205,10 +225,10 @@ void sunrise(unsigned int sec_speed) {
 void plantlight2() {
   for(int i=0; i<NUM_LEDS; i++) {
     if(i % 5 == 0) {
-      setLED(i, colorFn(0,0,255,0)); // blue
+      setLED(i, colorFn(0,0,120,0)); // blue
     }
     else {
-      setLED(i, colorFn(255,0,0,0)); // red
+      setLED(i, colorFn(120,0,0,0)); // red
     }
   }
   showLEDs();
@@ -216,13 +236,13 @@ void plantlight2() {
 
 void plantlight() {
   for(int i=0; i<NUM_LEDS; i++) {
-    setLED(i, colorFn(200,0,50,0)); // blue
+    setLED(i, colorFn(100,0,25,0)); // blue
   }
   showLEDs();
 }
 
 void colorTest(int wait) {
-  for (int i=0; i-30<NUM_LEDS; i++) {
+  for (int i=0; i-30<=NUM_LEDS; i++) {
     if (i >=  0 && i- 0 < NUM_LEDS) setLED(i,colorFn(255, 0, 0, 0));
     if (i >= 10 && i-10 < NUM_LEDS) setLED(i-10,colorFn(0, 255, 0, 0));
     if (i >= 20 && i-20 < NUM_LEDS) setLED(i-20,colorFn(0, 0, 255, 0));
@@ -231,6 +251,58 @@ void colorTest(int wait) {
     delay(wait);
     setColor(colorFn(0,0,0,0));
   }
+}
+
+void timedRoutine () {
+  Serial.println("Start of timed routine");
+  ctime = millis();
+
+  Serial.println("Time 6 - 7");
+  travellingMoonlight(2*MINUTE);
+  while(millis() < ctime+(1*HOUR)) pass;
+
+  Serial.println("Time 7 - 8");
+  travellingMoonlight(2*MINUTE);
+  while(millis() < ctime+(1*HOUR)) pass;
+  
+  Serial.println("Time 8 - 10");
+  lightOff();
+  while(millis() < ctime+(2*HOUR)) pass;
+  
+  Serial.println("Time 10 - 12");
+  plantlight();
+  while(millis() < ctime+(2*HOUR)) pass;
+
+  Serial.println("Time 12 - 13");
+  sunrise(10);
+  daylight();
+  while(millis() < ctime+(1*HOUR)) pass;
+
+  Serial.println("Time 13 - 17");
+  brightlight();
+  while(millis() < ctime+(4*HOUR)) pass;
+
+  Serial.println("Time 17 - 20");
+  daylight();
+  while(millis() < ctime+(3*HOUR)) pass;
+  
+  Serial.println("Time 20 - 21");
+  sundown(15);
+  travellingMoonlight(2*MINUTE);
+  while(millis() < ctime+(1*HOUR)) pass;
+  
+  Serial.println("Time 21 - 22");
+  travellingMoonlight(2*MINUTE);
+  while(millis() < ctime+(1*HOUR)) pass;
+ 
+  Serial.println("Time 22 - 0");
+  travellingMoonlight(2*MINUTE);
+  while(millis() < ctime+(2*HOUR)) pass;
+
+  Serial.println("Time 0 - 6");
+  lightOff();
+  while(millis() < ctime+(6*HOUR)) pass;
+  
 }
 
 void rtcRoutine () {
@@ -255,40 +327,45 @@ void rtcRoutine () {
   else if (now.hour() >= 17 && now.hour() <20) 
   {
   Serial.println("Time 17 - 20");
-  daylightWithStripe();
+  daylight();
   }
   else if (now.hour() >= 20 && now.hour() <21) 
   {
   Serial.println("Time 20 - 21");
-  daylight();
+  ctime = millis();
+  sundown(15);
+  travellingMoonlight(2*MINUTE);
+  while(millis() < ctime+(1*HOUR)) pass;
   }
   else if (now.hour() >= 21 && now.hour() <22) 
   {
   Serial.println("Time 21 - 22");
-  ctime = millis();
-  sundown(15);
-  moonlightWithStripe();
-  while(millis() < ctime+(1*HOUR)) pass;
+  travellingMoonlight(2*MINUTE);
   }
   else if (now.hour() >= 22 && now.hour() <24) 
   {
   Serial.println("Time 22 - 0");
-  moonlightWithStripe();
+  travellingMoonlight(2*MINUTE);
   }
   else if (now.hour() >= 0 && now.hour() <6) 
   {
   Serial.println("Time 0 - 6");
   lightOff();
   }
-  else if (now.hour() >= 6 && now.hour() <8) 
+  else if (now.hour() >= 6 && now.hour() <7) 
   {
-  Serial.println("Time 6 - 8");
-  moonlight();
+  Serial.println("Time 6 - 7");
+  travellingMoonlight(2*MINUTE);
+  }
+  else if (now.hour() >= 7 && now.hour() <8) 
+  {
+  Serial.println("Time 7 - 8");
+  travellingMoonlight(2*MINUTE);
   }
   else if (now.hour() >= 8 && now.hour() <10) 
   {
   Serial.println("Time 8 - 10");
-  plantlight();
+  lightOff();
   }
   else if (now.hour() >= 10 && now.hour() <12) 
   {
@@ -343,11 +420,14 @@ void loop() {
   Serial.println("Loop");
 
   //rtcRoutine();
+  timedRoutine();
+  //travellingMoonlight(0.2*SECOND);
   //brightlight();
   //daylight();
-  moonlight();
+  //moonlight();
   //moonlightWithStripe();
   //plantlight();
+  //plantlight2();
   //sunrise(0);
   //sundown(0);
   //daylightWithStripe();
