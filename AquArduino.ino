@@ -255,51 +255,61 @@ void colorTest(int wait) {
 
 void timedRoutine () {
   Serial.println("Start of timed routine");
-  ctime = millis();
 
   Serial.println("Time 6 - 7");
+  ctime = millis();
   travellingMoonlight(2*MINUTE);
-  while(millis() < ctime+(1*HOUR)) pass;
+  while(millis() < ctime+(1*HOUR)) travellingMoonlight(2*MINUTE);
 
   Serial.println("Time 7 - 8");
+  ctime = millis();
   travellingMoonlight(2*MINUTE);
-  while(millis() < ctime+(1*HOUR)) pass;
+  while(millis() < ctime+(1*HOUR)) travellingMoonlight(2*MINUTE);
   
   Serial.println("Time 8 - 10");
+  ctime = millis();
   lightOff();
   while(millis() < ctime+(2*HOUR)) pass;
   
   Serial.println("Time 10 - 12");
+  ctime = millis();
   plantlight();
   while(millis() < ctime+(2*HOUR)) pass;
 
   Serial.println("Time 12 - 13");
+  ctime = millis();
   sunrise(10);
   daylight();
   while(millis() < ctime+(1*HOUR)) pass;
 
   Serial.println("Time 13 - 17");
+  ctime = millis();
   brightlight();
   while(millis() < ctime+(4*HOUR)) pass;
 
   Serial.println("Time 17 - 20");
+  ctime = millis();
   daylight();
   while(millis() < ctime+(3*HOUR)) pass;
   
   Serial.println("Time 20 - 21");
+  ctime = millis();
   sundown(15);
   travellingMoonlight(2*MINUTE);
-  while(millis() < ctime+(1*HOUR)) pass;
+  while(millis() < ctime+(1*HOUR)) travellingMoonlight(2*MINUTE);
   
   Serial.println("Time 21 - 22");
+  ctime = millis();
   travellingMoonlight(2*MINUTE);
-  while(millis() < ctime+(1*HOUR)) pass;
+  while(millis() < ctime+(1*HOUR)) travellingMoonlight(2*MINUTE);
  
   Serial.println("Time 22 - 0");
+  ctime = millis();
   travellingMoonlight(2*MINUTE);
-  while(millis() < ctime+(2*HOUR)) pass;
+  while(millis() < ctime+(2*HOUR)) travellingMoonlight(2*MINUTE);
 
   Serial.println("Time 0 - 6");
+  ctime = millis();
   lightOff();
   while(millis() < ctime+(6*HOUR)) pass;
   
@@ -335,7 +345,7 @@ void rtcRoutine () {
   ctime = millis();
   sundown(15);
   travellingMoonlight(2*MINUTE);
-  while(millis() < ctime+(1*HOUR)) pass;
+  while(millis() < ctime+(1*HOUR)) travellingMoonlight(2*MINUTE);
   }
   else if (now.hour() >= 21 && now.hour() <22) 
   {
