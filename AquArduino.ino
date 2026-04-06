@@ -229,6 +229,58 @@ void colorTest(int wait) {
   }
 }
 
+void timedRoutine () {
+  Serial.println("Start of timed routine");
+  ctime = millis();
+
+  Serial.println("Time 6 - 7");
+  moonlight();
+  while(millis() < ctime+(1*HOUR)) pass;
+
+  Serial.println("Time 7 - 8");
+  moonlight();
+  while(millis() < ctime+(1*HOUR)) pass;
+  
+  Serial.println("Time 8 - 10");
+  lightOff();
+  while(millis() < ctime+(2*HOUR)) pass;
+  
+  Serial.println("Time 10 - 12");
+  plantlight();
+  while(millis() < ctime+(2*HOUR)) pass;
+
+  Serial.println("Time 12 - 13");
+  sunrise(10);
+  daylight();
+  while(millis() < ctime+(1*HOUR)) pass;
+
+  Serial.println("Time 13 - 17");
+  brightlight();
+  while(millis() < ctime+(4*HOUR)) pass;
+
+  Serial.println("Time 17 - 20");
+  daylight();
+  while(millis() < ctime+(3*HOUR)) pass;
+  
+  Serial.println("Time 20 - 21");
+  sundown(15);
+  moonlight();
+  while(millis() < ctime+(1*HOUR)) pass;
+  
+  Serial.println("Time 21 - 22");
+  moonlight();
+  while(millis() < ctime+(1*HOUR)) pass;
+ 
+  Serial.println("Time 22 - 0");
+  moonlight();
+  while(millis() < ctime+(2*HOUR)) pass;
+
+  Serial.println("Time 0 - 6");
+  lightOff();
+  while(millis() < ctime+(6*HOUR)) pass;
+  
+}
+
 void rtcRoutine () {
   Serial.println("Start of rtc routine");
   DateTime now = rtc.now();
@@ -343,7 +395,8 @@ void setup() {
 void loop() {
   Serial.println("Loop");
 
-  rtcRoutine();
+  //rtcRoutine();
+  timedRoutine();
   //brightlight();
   //daylight();
   //moonlight();
